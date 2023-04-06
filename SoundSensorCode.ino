@@ -35,11 +35,11 @@ void setup()
 void loop() {   
     dataBuffer[counter] = analogRead(A0);
     counter++;
-    if (counter == 512)
+    if (counter >= 512)
     {
       sendSensData();
     }
-    delayMicroseconds(1953);
+    delay(4);
 
     unsigned long now = millis();
     if((now - lastBlink >= 1000) && (adin1110.getLinkStatus()))
