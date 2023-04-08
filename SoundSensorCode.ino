@@ -1,5 +1,5 @@
 #include "SparkFun_SinglePairEthernet.h"
-#include "DAT_FFT_App.h"
+#include "DAD_FFT_App.h"
 
 #define ChipSelPin CS
 #define InterruptPin G1
@@ -11,7 +11,7 @@ DAD_FFT_App fftApp;
 byte deviceMAC[6] = {0x00, 0xE0, 0x22, 0xFE, 0xDA, 0x03};
 byte destinationMAC[6] = {0x00, 0xE0, 0x22, 0xFE, 0xDA, 0xCA};
 
-uint16_t dataBuffer[512];
+float dataBuffer[512];
 byte outputBuffer[512];
 int counter;
 unsigned long lastBlink = 0;
@@ -43,7 +43,7 @@ void loop() {
       calculateFFT();
       sendSensData();
     }
-    delayMicroSeconds(100);
+    delayMicroseconds(100);
 
     unsigned long now = millis();
     if((now - lastBlink >= 1000) && (adin1110.getLinkStatus()))
@@ -55,8 +55,8 @@ void loop() {
 
 void calculateFFT()
 {
-  fftApp.FFT_Calculate((float *)dataBuffer, outputBuffer);
-  memset(dataBuffer, 0, sizeof(dataBuffer))
+  fftApp.FFT_Calculate(dataBuffer, outputBuffer);
+  memset(dataBuffer, 0, sizeof(dataBuffer));
 }
 
 void sendSensData()
@@ -67,5 +67,5 @@ void sendSensData()
   }
   memset(outputBuffer, 0, sizeof(outputBuffer));
   counter = 0;
-  delay(25000);
+  delay(2500);
 }
