@@ -11,10 +11,11 @@ arduinoFFT FFT;
 byte deviceMAC[6] = {0x00, 0xE0, 0x22, 0xFE, 0xDA, 0x03};
 byte destinationMAC[6] = {0x00, 0xE0, 0x22, 0xFE, 0xDA, 0xCA};
 
-const uint16_t samples = 1024;
+const uint16_t samples = 512;
 const double samplingFrequency = 10000;
 double vReal[samples];
 double vImag[samples];
+byte outputBuffer[samples];
 
 unsigned long lastBlink = 0;
 
@@ -74,9 +75,13 @@ void calculateFFT()
 
 void sendSensData()
 {
+  for(int i = 0; i < samples; i++)
+  {
+    outputBuffer[i] = (byte)vReal[i];
+  }
   if(adin1110.getLinkStatus())
   {
-    adin1110.sendData((byte*)vReal, sizeof(vReal), destinationMAC);
+    adin1110.sendData(outputBuffer, sizeof(outputBuffer), destinationMAC);
   }
   delay(1000);
 }
