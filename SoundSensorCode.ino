@@ -36,14 +36,9 @@ void setup()
 }
 
 void loop() {   
-    dataBuffer[counter] = analogRead(A0);
-    counter++;
-    if (counter >= 512)
-    {
-      calculateFFT();
-      sendSensData();
-    }
-    delayMicroseconds(100);
+    collectData(dataBuffer);
+    calculateFFT();
+    sendSensData();
 
     unsigned long now = millis();
     if((now - lastBlink >= 1000) && (adin1110.getLinkStatus()))
@@ -53,10 +48,24 @@ void loop() {
     }
 }
 
+void collectData(float sample[SAMPLE_LENGTH]){
+  long int delay1, delay2, delay3, delay4; 
+  for(int i = 0; i < SAMPLE_LENGTH; i++){
+    sample[i] = analogRead(A0);    
+    delayMicroseconds(19);
+    delay1++; delay2++; delay3++; delay4++; // delayMicroseconds only has so much resolution. Incrementing these arificially brings us closer to the targetted delay
+  }
+
+  // Remove DC offset
+  for(int i = 0; i < SAMPLE_LENGTH; i++){
+    sample[i] = sample[i] - 32857.36;    
+  }
+}
+
 void calculateFFT()
 {
   fftApp.FFT_Calculate(dataBuffer, outputBuffer);
-  memset(dataBuffer, 0, sizeof(dataBuffer));
+  memset(dataBuffer, 1, sizeof(dataBuffer));
 }
 
 void sendSensData()
@@ -67,5 +76,5 @@ void sendSensData()
   }
   memset(outputBuffer, 0, sizeof(outputBuffer));
   counter = 0;
-  delay(2500);
+  delay(1000);
 }
