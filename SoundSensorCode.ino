@@ -102,5 +102,5 @@ void sendSensData() {
     adin1110.sendData(outputBuffer, sizeof(outputBuffer), destinationMAC);
   }
 #endif
-  delay(3500);
+  delay(4000);
 }
